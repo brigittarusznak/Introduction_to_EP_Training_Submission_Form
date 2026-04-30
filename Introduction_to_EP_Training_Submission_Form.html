@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>New Training Submission Form</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+  :root {
+    --blue2: #0C0CA5;
+    --blue1: #1010EB;
+    --lavender: #654BDD;
+    --bg: #F5F5F5;
+    --navy: #140F4B;
+    --btn-text: #777777;
+    --white: #ffffff;
+    --field-border: #c5bef5;
+    --field-bg: #ffffff;
+    --error-red: #c0392b;
+    --success-green: #1a7a4a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(101,75,221,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(16,16,235,0.06) 0%, transparent 50%);
+  }
+
+  .card {
+    background: var(--white);
+    border: 2.5px solid var(--navy);
+    border-radius: 22px;
+    padding: 52px 48px 44px;
+    width: 100%;
+    max-width: 560px;
+    box-shadow: 0 8px 40px rgba(20,15,75,0.13), 0 2px 8px rgba(20,15,75,0.07);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--blue2), var(--lavender), var(--blue1));
+    border-radius: 22px 22px 0 0;
+  }
+
+  /* SCREEN */
+  .screen { display: none; animation: fadeIn 0.38s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TYPOGRAPHY */
+  .form-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--blue2);
+    font-size: 1.85rem;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .form-subtitle {
+    color: var(--blue1);
+    font-size: 1.05rem;
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: 0.04em;
+    margin-bottom: 38px;
+    text-transform: uppercase;
+  }
+
+  /* FIELD */
+  .field-group { margin-bottom: 26px; }
+
+  .field-label {
+    display: block;
+    color: var(--lavender);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .field-input {
+    width: 100%;
+    border: 1.8px solid var(--field-border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.97rem;
+    color: var(--navy);
+    background: var(--field-bg);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .field-input:focus {
+    border-color: var(--lavender);
+    box-shadow: 0 0 0 3px rgba(101,75,221,0.13);
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { opacity: 1; }
+
+  /* BUTTON */
+  .btn {
+    display: block;
+    margin: 0 auto;
+    background: var(--lavender);
+    color: var(--btn-text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.97rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 52px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 18px rgba(101,75,221,0.18);
+    margin-top: 12px;
+  }
+
+  .btn:hover { background: #5540c4; box-shadow: 0 6px 24px rgba(101,75,221,0.28); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1.5px solid rgba(101,75,221,0.13);
+    margin: 30px 0;
+  }
+
+  /* SUCCESS / ERROR SCREENS */
+  .status-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 2rem;
+  }
+  .status-icon.success { background: rgba(26,122,74,0.1); color: var(--success-green); }
+  .status-icon.error   { background: rgba(192,57,43,0.1); color: var(--error-red); }
+
+  .error-title { color: var(--error-red) !important; }
+
+  .info-text {
+    color: var(--lavender);
+    font-size: 0.92rem;
+    text-align: left;
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+
+  .contact-text {
+    color: var(--navy);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+
+  .btn-outline {
+    display: block;
+    margin: 10px auto 0;
+    background: transparent;
+    color: var(--lavender);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.93rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border: 2px solid var(--lavender);
+    border-radius: 50px;
+    padding: 12px 40px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { background: var(--lavender); color: var(--btn-text); }
+
+  /* COUNTDOWN */
+  .countdown {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.78rem;
+    margin-top: 18px;
+    letter-spacing: 0.04em;
+  }
+
+  /* SPINNER */
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* COPY NOTICE */
+  .copy-notice {
+    display: none;
+    background: rgba(101,75,221,0.1);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    color: var(--lavender);
+    text-align: center;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- ===== SCREEN 1: LANDING ===== -->
+  <div class="screen active" id="screen1">
+    <h1 class="form-title">New Training Submission Form</h1>
+    <p class="form-subtitle">Introduction to EP</p>
+    <button class="btn" onclick="goTo(2)">Start</button>
+  </div>
+
+  <!-- ===== SCREEN 2: FORM ===== -->
+  <div class="screen" id="screen2">
+    <h1 class="form-title">New Training Submission</h1>
+    <p class="form-subtitle">Introduction to EP</p>
+
+    <div class="field-group">
+      <label class="field-label" for="trainingTitle">Training Title</label>
+      <input class="field-input" type="text" id="trainingTitle" placeholder="Enter training title…" />
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="startDate">Start Date</label>
+      <input class="field-input" type="date" id="startDate" />
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="numSlots">Number of Slots</label>
+      <input class="field-input" type="number" id="numSlots" min="1" max="200" placeholder="e.g. 10" />
+    </div>
+
+    <hr class="divider" />
+    <button class="btn" id="submitBtn" onclick="submitForm()">Submit</button>
+  </div>
+
+  <!-- ===== SCREEN 3A: SUCCESS ===== -->
+  <div class="screen" id="screen3a">
+    <div class="status-icon success">✓</div>
+    <h1 class="form-title">Information Submitted Successfully</h1>
+    <p class="form-subtitle" style="margin-bottom:10px;">Introduction to EP</p>
+    <p style="text-align:center;color:var(--navy);font-size:0.93rem;margin-bottom:28px;line-height:1.6;">
+      You successfully entered the new training information to your Introduction&nbsp;to&nbsp;EP SharePoint&nbsp;List.
+    </p>
+    <button class="btn" onclick="resetToStart()">Back to Start</button>
+    <p class="countdown" id="countdown3a"></p>
+  </div>
+
+  <!-- ===== SCREEN 3B: ERROR ===== -->
+  <div class="screen" id="screen3b">
+    <div class="status-icon error">✕</div>
+    <h1 class="form-title error-title">Failed Submission</h1>
+    <p class="form-subtitle" id="errorMsgTitle" style="color:var(--error-red);margin-bottom:24px;">An unexpected error occurred.</p>
+
+    <p class="info-text">Please try 1 more time, after refreshing.</p>
+    <p class="contact-text">If the problem persists, please contact <strong>Brigitta Rusznak</strong>.</p>
+
+    <button class="btn" onclick="copyError()">Copy the Error</button>
+    <div class="copy-notice" id="copyNotice">Error message copied to clipboard!</div>
+    <hr class="divider" />
+    <button class="btn-outline" onclick="resetToStart()">Back to Start</button>
+    <p class="countdown" id="countdown3b"></p>
+  </div>
+
+</div>
+
+<script>
+  // ─── CONFIG ───────────────────────────────────────────────────────────────
+  const SITE_URL  = "https://medtronicemea.sharepoint.com/sites/AfferaCertificationPortal";
+  const LIST_NAME = "Introduction to EP Training List";
+  // ──────────────────────────────────────────────────────────────────────────
+
+  let countdownTimer = null;
+  let fullErrorMessage = "";
+
+  function goTo(screenNum) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen' + screenNum).classList.add('active');
+  }
+
+  function resetToStart() {
+    clearInterval(countdownTimer);
+    document.getElementById('trainingTitle').value = '';
+    document.getElementById('startDate').value = '';
+    document.getElementById('numSlots').value = '';
+    goTo(1);
+  }
+
+  function startCountdown(elementId, seconds, callback) {
+    clearInterval(countdownTimer);
+    const el = document.getElementById(elementId);
+    let remaining = seconds;
+    el.textContent = `Returning to start in ${remaining}s…`;
+    countdownTimer = setInterval(() => {
+      remaining--;
+      if (remaining <= 0) {
+        clearInterval(countdownTimer);
+        el.textContent = '';
+        callback();
+      } else {
+        el.textContent = `Returning to start in ${remaining}s…`;
+      }
+    }, 1000);
+  }
+
+  async function getRequestDigest() {
+    const resp = await fetch(`${SITE_URL}/_api/contextinfo`, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json;odata=verbose' },
+      credentials: 'include'
+    });
+    if (!resp.ok) throw new Error(`Context info failed: ${resp.status} ${resp.statusText}`);
+    const data = await resp.json();
+    return data.d.GetContextWebInformation.FormDigestValue;
+  }
+
+  async function addListItem(digest, title, startDate) {
+    const body = JSON.stringify({
+      __metadata: { type: `SP.Data.Introduction_x0020_to_x0020_EP_x0020_Training_x0020_ListListItem` },
+      Title: title,
+      Start_x0020_Date: startDate ? new Date(startDate).toISOString() : null
+    });
+
+    const resp = await fetch(
+      `${SITE_URL}/_api/web/lists/getbytitle('${encodeURIComponent(LIST_NAME)}')/items`,
+      {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json;odata=verbose',
+          'Content-Type': 'application/json;odata=verbose',
+          'X-RequestDigest': digest
+        },
+        credentials: 'include',
+        body
+      }
+    );
+    if (!resp.ok) {
+      const errText = await resp.text();
+      throw new Error(`HTTP ${resp.status}: ${errText}`);
+    }
+    return resp.json();
+  }
+
+  async function submitForm() {
+    const title    = document.getElementById('trainingTitle').value.trim();
+    const dateVal  = document.getElementById('startDate').value;
+    const slots    = parseInt(document.getElementById('numSlots').value, 10);
+
+    // ── Validation ──────────────────────────────────────────────────────────
+    if (!title) { alert('Please enter a Training Title.'); return; }
+    if (!dateVal) { alert('Please select a Start Date.'); return; }
+    if (!slots || slots < 1) { alert('Please enter a valid Number of Slots (≥ 1).'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+    try {
+      const digest = await getRequestDigest();
+      for (let i = 0; i < slots; i++) {
+        await addListItem(digest, title, dateVal);
+      }
+      goTo('3a');
+      startCountdown('countdown3a', 15, resetToStart);
+    } catch (err) {
+      fullErrorMessage = err.message || String(err);
+      document.getElementById('errorMsgTitle').textContent = extractShortError(fullErrorMessage);
+      goTo('3b');
+      startCountdown('countdown3b', 15, resetToStart);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Submit';
+    }
+  }
+
+  function extractShortError(msg) {
+    // Try to pull a readable title from SharePoint JSON errors
+    try {
+      const parsed = JSON.parse(msg.includes('{') ? msg.substring(msg.indexOf('{')) : msg);
+      return parsed?.error?.message?.value || parsed?.error?.code || msg.split('\n')[0];
+    } catch { return msg.split('\n')[0].slice(0, 120); }
+  }
+
+  function copyError() {
+    // Modern clipboard API
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(fullErrorMessage).then(() => {
+        showCopyNotice();
+      }).catch(() => fallbackCopy());
+    } else {
+      fallbackCopy();
+    }
+  }
+
+  function fallbackCopy() {
+    // execCommand fallback — works even without HTTPS / clipboard permission
+    const ta = document.createElement('textarea');
+    ta.value = fullErrorMessage;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand('copy');
+      showCopyNotice();
+    } catch {
+      alert('Could not copy automatically.\n\nError:\n' + fullErrorMessage);
+    }
+    document.body.removeChild(ta);
+  }
+
+  function showCopyNotice() {
+    const notice = document.getElementById('copyNotice');
+    notice.style.display = 'block';
+    setTimeout(() => notice.style.display = 'none', 3000);
+  }
+</script>
+</body>
+</html>
